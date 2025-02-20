@@ -18,7 +18,8 @@ const frontendURL = process.env.FRONTEND_URL;           //Getting hold of fronte
 app.use(
     cors({
         origin: frontendURL, // React frontend URL
-        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        methods: ["GET", "POST", "PUT", "DELETE"],
+        allowedHeaders: ["Content-Type", "Authorization"],
         credentials: true // Allows cookies and authentication headers
     })
 );
