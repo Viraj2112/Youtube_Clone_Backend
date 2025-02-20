@@ -17,10 +17,10 @@ const frontendURL = process.env.FRONTEND_URL;           //Getting hold of fronte
 // Enabling CORS for frontend request
 app.use(
     cors({
-        origin: "*", // React frontend URL
-        methods: ["GET", "POST", "PUT", "DELETE"],
-        allowedHeaders: ["Content-Type", "Authorization"],
-        credentials: true // Allows cookies and authentication headers
+        origin: frontendURL, // React frontend URL
+        // methods: ["GET", "POST", "PUT", "DELETE"],
+        // allowedHeaders: ["Content-Type", "Authorization"],
+        // credentials: true // Allows cookies and authentication headers
     })
 );
 
