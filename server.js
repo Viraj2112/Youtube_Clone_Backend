@@ -15,14 +15,14 @@ const mongodbURL = process.env.MONGODB_URL;         //Getting hold of the mongod
 const frontendURL = process.env.FRONTEND_URL;           //Getting hold of frontendURL from .env file
 
 // Enabling CORS for frontend request
-// app.use(
-//     cors({
-//         origin: frontendURL, // React frontend URL
-//         // methods: ["GET", "POST", "PUT", "DELETE"],
-//         // allowedHeaders: ["Content-Type", "Authorization"],
-//         // credentials: true // Allows cookies and authentication headers
-//     })
-// );
+app.use(
+    cors({
+        origin: frontendURL, // React frontend URL
+        // methods: ["GET", "POST", "PUT", "DELETE"],
+        // allowedHeaders: ["Content-Type", "Authorization"],
+        // credentials: true // Allows cookies and authentication headers
+    })
+);
 
 
 // In production (i.e. on Vercel), do not call app.listen().
