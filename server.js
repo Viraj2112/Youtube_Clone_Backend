@@ -3,49 +3,50 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import { routes } from './Routes/routes.js';
 import dotenv from 'dotenv';
-// import { Channel } from './Model/model.js';
-// import { Video } from './Model/model.js';
 
-dotenv.config();        // dotenv is used to access environment variables
+dotenv.config();
 
-const app = express();      // Creating the app using express.
+const app = express();
 
-const PORT = process.env.PORT;              //Getting hold of PORT stored in .env
-const mongodbURL = process.env.MONGODB_URL;         //Getting hold of the mongodb Atlas url
-const frontendURL = process.env.FRONTEND_URL;           //Getting hold of frontendURL from .env file
+const PORT = process.env.PORT;
+const mongodbURL = process.env.MONGODB_URL;
+const frontendURL = process.env.FRONTEND_URL;
 
-// Enabling CORS for frontend request
-app.use(
-    cors({
-        origin: frontendURL, // React frontend URL
-        // methods: ["GET", "POST", "PUT", "DELETE"],
-        // allowedHeaders: ["Content-Type", "Authorization"],
-        // credentials: true // Allows cookies and authentication headers
-    })
-);
+// Custom CORS middleware for serverless functions
+const allowCors = (fn) => async (req, res) => {
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Allow-Origin', frontendURL);  // Allow only your frontend
+    res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+    res.setHeader(
+        'Access-Control-Allow-Headers',
+        'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
+    );
 
+    if (req.method === 'OPTIONS') {
+        res.status(200).end();
+        return;
+    }
 
-// In production (i.e. on Vercel), do not call app.listen().
-// Vercel automatically wraps your exported app as a serverless function.
+    return fn(req, res);
+};
+
+// Enable CORS
+app.use(cors({ origin: frontendURL, credentials: true }));
+app.use(express.json());
+
 if (process.env.NODE_ENV !== 'production') {
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 }
 
-app.use(express.json());        //express.json() is a middleware to parse files as json files
-
-mongoose.connect(mongodbURL);           //Forming a connection with mongodb
-
+// Connect to MongoDB
+mongoose.connect(mongodbURL);
 const db = mongoose.connection;
 
-// If the connection is successful 
-db.on('open', () => {
-    console.log('Database Connection Successful');          
-})
+db.on('open', () => console.log('Database Connection Successful'));
+db.on('error', () => console.log('Database Connection Unsuccessful'));
 
-// If the connection is not successsful
-db.on('error', () => {
-    console.log('Database Connection Unsuccessful');
-})
-
-// app routes
+// API routes
 routes(app);
+
+// ✅ Export the Express app as a **serverless function**
+export default allowCors(app);
