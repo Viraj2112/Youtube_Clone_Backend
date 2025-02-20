@@ -17,7 +17,7 @@ const frontendURL = process.env.FRONTEND_URL;           //Getting hold of fronte
 // Enabling CORS for frontend request
 app.use(
     cors({
-        origin: frontendURL, // React frontend URL
+        origin: "https://youtube-clone-backend-ten.vercel.app", // React frontend URL
         methods: ["GET", "POST", "PUT", "DELETE"],
         allowedHeaders: ["Content-Type", "Authorization"],
         credentials: true // Allows cookies and authentication headers
